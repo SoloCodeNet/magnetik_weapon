@@ -1,0 +1,134 @@
+[gd_scene load_steps=18 format=2]
+
+[ext_resource path="res://assets/tiles.png" type="Texture" id=1]
+[ext_resource path="res://scripts/player2.gd" type="Script" id=2]
+[ext_resource path="res://assets/flash2.png" type="Texture" id=6]
+[ext_resource path="res://assets/over2.png" type="Texture" id=7]
+
+[sub_resource type="AtlasTexture" id=1]
+atlas = ExtResource( 1 )
+region = Rect2( 0, 0, 16, 32 )
+
+[sub_resource type="AtlasTexture" id=2]
+atlas = ExtResource( 1 )
+region = Rect2( 16, 0, 16, 32 )
+
+[sub_resource type="AtlasTexture" id=3]
+atlas = ExtResource( 1 )
+region = Rect2( 32, 0, 16, 32 )
+
+[sub_resource type="AtlasTexture" id=4]
+atlas = ExtResource( 1 )
+region = Rect2( 48, 0, 16, 32 )
+
+[sub_resource type="AtlasTexture" id=5]
+atlas = ExtResource( 1 )
+region = Rect2( 0, 32, 16, 32 )
+
+[sub_resource type="AtlasTexture" id=6]
+atlas = ExtResource( 1 )
+region = Rect2( 16, 32, 16, 32 )
+
+[sub_resource type="AtlasTexture" id=7]
+atlas = ExtResource( 1 )
+region = Rect2( 64, 0, 16, 32 )
+
+[sub_resource type="AtlasTexture" id=8]
+atlas = ExtResource( 1 )
+region = Rect2( 80, 0, 16, 32 )
+
+[sub_resource type="AtlasTexture" id=9]
+atlas = ExtResource( 1 )
+region = Rect2( 96, 0, 16, 32 )
+
+[sub_resource type="AtlasTexture" id=10]
+atlas = ExtResource( 1 )
+region = Rect2( 112, 0, 16, 32 )
+
+[sub_resource type="SpriteFrames" id=11]
+animations = [ {
+"frames": [ SubResource( 1 ), SubResource( 2 ), SubResource( 3 ), SubResource( 4 ) ],
+"loop": true,
+"name": "idle",
+"speed": 10.0
+}, {
+"frames": [ SubResource( 5 ), SubResource( 6 ) ],
+"loop": true,
+"name": "magnet",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 7 ), SubResource( 8 ), SubResource( 9 ), SubResource( 10 ) ],
+"loop": true,
+"name": "walk",
+"speed": 8.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=12]
+extents = Vector2( 5, 14 )
+
+[sub_resource type="RectangleShape2D" id=13]
+extents = Vector2( 3.99997, 4.00003 )
+
+[node name="player" type="KinematicBody2D"]
+script = ExtResource( 2 )
+
+[node name="Sprite" type="AnimatedSprite" parent="."]
+frames = SubResource( 11 )
+animation = "magnet"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 0, 2 )
+shape = SubResource( 12 )
+
+[node name="hand" type="Node2D" parent="."]
+
+[node name="Sprite" type="Sprite" parent="hand"]
+visible = false
+texture = ExtResource( 1 )
+offset = Vector2( 8, 0 )
+region_enabled = true
+region_rect = Rect2( 0, 64, 32, 16 )
+
+[node name="TextureProgress" type="TextureProgress" parent="hand"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -8.0
+margin_top = -8.0
+margin_right = 24.0
+margin_bottom = 8.0
+min_value = 500.0
+max_value = 5000.0
+value = 500.0
+texture_under = ExtResource( 7 )
+texture_progress = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Position2D" type="Position2D" parent="hand"]
+position = Vector2( 30, 0 )
+
+[node name="Area2D" type="Area2D" parent="hand"]
+position = Vector2( 22, 0 )
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hand/Area2D"]
+position = Vector2( 18, 0 )
+rotation = -1.57079
+shape = SubResource( 13 )
+
+[node name="cursor" type="Area2D" parent="."]
+z_index = 100
+
+[node name="Sprite" type="Sprite" parent="cursor"]
+texture = ExtResource( 1 )
+region_enabled = true
+region_rect = Rect2( 32, 64, 16, 16 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="cursor"]
+polygon = PoolVector2Array( -3, -1, -3, 1, -1, 1, -1, 3, 1, 3, 1, 1, 3, 1, 3, -1, 1, -1, 1, -3, -1, -3, -1, -1 )
+
+[connection signal="body_entered" from="cursor" to="." method="_on_cursor_body_entered"]
+[connection signal="body_exited" from="cursor" to="." method="_on_cursor_body_exited"]
